@@ -10,7 +10,11 @@ This image is used to quickly deploy a drupal website. Including below features.
 
 ## usage:
 ```
+## run drupal website
 docker run -d -p 8080:80 --name quick-drupal zterry95/drupal-quick
+## using composer/drush/drupal console
+docker exec -it quick-drupal bash 
+drush
 ```
 * Then visit http://localhost:8080 to view drupal website.
 > username: admin
