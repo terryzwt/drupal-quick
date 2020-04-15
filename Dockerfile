@@ -28,4 +28,3 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
 USER www-data
 RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite
 USER root
-#RUN fish
