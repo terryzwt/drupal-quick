@@ -1,9 +1,12 @@
 FROM drupal:8-apache
 ENV DRUSH_VERSION 8.3.0
 ENV DRUSH_LAUCHER 0.6.0
-ENV DRUSH_LAUNCHER_FALLBACK=/usr/local/bin/drush8
+ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
+ENV COMPOSER_MEMORY_LIMIT -1
 RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
-    chsh -s /usr/bin/fish && \
+    cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+    sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
+    #chsh -s /usr/bin/fish && \
     php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
@@ -21,12 +24,14 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
     mv drupal.phar /usr/local/bin/drupal && \
     chmod +x /usr/local/bin/drupal && \
     composer require drupal/console && \
-    mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
-    ##drupal init --override && \
-    cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
-    sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
-    composer require drupal/module_filter drupal/admin_toolbar && \
-    drush en -y module_filter admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
+    #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
+    drupal init --override && \
+    ## ensure the durpal console can run as www-data
+    chown www-data:www-data /var/www && \
+    ## install drupal module
+    composer require drupal/module_filter drupal/admin_toolbar
 USER www-data
-RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite
+RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite && \
+    drush cr && \
+    drupal module:install -y module_filter admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER root
