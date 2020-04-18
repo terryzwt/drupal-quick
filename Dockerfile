@@ -25,7 +25,7 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
     ##drupal init --override && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
-    composer require drupal/module_fiter drupal/admin_toolbar && \
+    composer require drupal/module_filter drupal/admin_toolbar && \
     drush en -y module_filter admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER www-data
 RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite
