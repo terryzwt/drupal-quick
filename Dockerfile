@@ -20,7 +20,7 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
     curl https://drupalconsole.com/installer -L -o drupal.phar && \
     mv drupal.phar /usr/local/bin/drupal && \
     chmod +x /usr/local/bin/drupal && \
-    #composer require drupal/console && \
+    composer require drupal/console && \
     mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
     ##drupal init --override && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
