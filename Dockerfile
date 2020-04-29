@@ -3,7 +3,7 @@ ENV DRUSH_VERSION 8.3.0
 ENV DRUSH_LAUCHER 0.6.0
 ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
 ENV COMPOSER_MEMORY_LIMIT -1
-RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget && \
+RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget git && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
     #chsh -s /usr/bin/fish && \
