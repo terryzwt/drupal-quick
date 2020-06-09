@@ -1,0 +1,37 @@
+FROM drupal:apache
+ENV DRUSH_VERSION 8.3.0
+ENV DRUSH_LAUCHER 0.6.0
+ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
+ENV COMPOSER_MEMORY_LIMIT -1
+RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget git && \
+    cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+    sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
+    #chsh -s /usr/bin/fish && \
+    php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');" && \
+    mv composer.phar /usr/local/bin/composer && \
+    ###### install drush ######
+    curl -fsSL -o /usr/local/bin/drush8 https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar | sh && \
+    chmod +x /usr/local/bin/drush8 && \
+    drush8 core-status && \
+    ###### install drush laucher ######
+    wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/$DRUSH_LAUCHER/drush.phar && \
+    chmod +x drush.phar && \
+    mv drush.phar /usr/local/bin/drush && \
+    # Install console.
+    curl https://drupalconsole.com/installer -L -o drupal.phar && \
+    mv drupal.phar /usr/local/bin/drupal && \
+    chmod +x /usr/local/bin/drupal && \
+    composer require drupal/console drush/drush && \
+    #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
+    drupal init --override && \
+    ## ensure the durpal console can run as www-data
+    chown www-data:www-data /var/www && \
+    ## install drupal module
+    composer require drupal/module_filter drupal/admin_toolbar
+USER www-data
+RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite && \
+    drush cr && \
+    drupal module:install -y module_filter admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
+USER root
