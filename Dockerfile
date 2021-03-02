@@ -1,6 +1,5 @@
 FROM drupal:apache
-ENV DRUSH_VERSION 8.3.0
-ENV DRUSH_LAUCHER 0.6.0
+ENV DRUSH_LAUCHER 0.9.0
 ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
 ENV COMPOSER_MEMORY_LIMIT -1
 RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget git && \
@@ -11,10 +10,6 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget git && \
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer && \
-    ###### install drush ######
-    curl -fsSL -o /usr/local/bin/drush8 https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar | sh && \
-    chmod +x /usr/local/bin/drush8 && \
-    drush8 core-status && \
     ###### install drush laucher ######
     wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/$DRUSH_LAUCHER/drush.phar && \
     chmod +x drush.phar && \
@@ -25,13 +20,13 @@ RUN apt-get update -y && apt-get install vim fish sqlite3 -y wget git && \
     chmod +x /usr/local/bin/drupal && \
     composer require drupal/console drush/drush && \
     #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
-    drupal init --override && \
+    # drupal init && \
     ## ensure the durpal console can run as www-data
     chown www-data:www-data /var/www && \
     ## install drupal module
-    composer require drupal/module_filter drupal/admin_toolbar
+    composer require drupal/admin_toolbar
 USER www-data
 RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite && \
     drush cr && \
-    drupal module:install -y module_filter admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
+    drush pm:enable -y admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER root
