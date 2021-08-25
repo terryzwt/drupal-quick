@@ -1,4 +1,4 @@
-FROM drupal:apache
+FROM drupal:9-apache
 ENV DRUSH_LAUCHER 0.9.0
 ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
 ENV COMPOSER_MEMORY_LIMIT -1
