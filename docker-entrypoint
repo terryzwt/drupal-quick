@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+# copy file so volumn can share existint database;
+#cp /data/.drupal.sqlite /data/.drupal.sqlite
+drush site-install -y --account-pass=admin --db-url=sqlite:///data/.drupal.sqlite && \
+drush cr && \
+drush pm:enable -y admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter &&\
+chmod -R 777 /data
+
+if [ "${1#-}" != "$1" ]; then
+    set -- apache2-foreground "$@"
+fi
+
+exec "$@"

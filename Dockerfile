@@ -5,6 +5,8 @@ ENV COMPOSER_MEMORY_LIMIT -1
 RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git default-mysql-client && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
+    mkdir /data && \
+    chown -R www-data:www-data /data && \
     #chsh -s /usr/bin/fish && \
     php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
     php composer-setup.php && \
@@ -26,7 +28,15 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     ## install drupal module
     composer require drupal/admin_toolbar
 USER www-data
-RUN drush site-install -y --account-pass=admin --db-url=sqlite://sites/default/files/.ht.sqlite && \
+#VOLUME /data
+RUN drush site-install -y --account-pass=admin --db-url=sqlite:///data/.drupal.sqlite && \
     drush cr && \
     drush pm:enable -y admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER root
+
+ENTRYPOINT ["docker-entrypoint"]
+# https://github.com/docker-library/php/blob/master/8.1-rc/buster/apache/Dockerfile
+STOPSIGNAL SIGWINCH
+COPY docker-entrypoint /usr/local/bin/
+
+CMD ["apache2-foreground"]
