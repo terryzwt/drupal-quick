@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 # copy file so volumn can share existint database;
-if [ ! -f /data/drupal.sqlite ] then
+if [ ! -f /data/drupal.sqlite ]; then
   mv /tmp/.drupal.sqlite /data/drupal.sqlite
   sed -i "s#\/tmp\/\.drupal\.sqlite#\/data\/drupal\.sqlite#g" /opt/drupal/web/sites/default/settings.php
 fi
