@@ -1,9 +1,11 @@
 #!/bin/sh
 set -e
 # copy file so volumn can share existint database;
-#cp /data/.drupal.sqlite /data/.drupal.sqlite
-mv /tmp/.drupal.sqlite /data/drupal.sqlite
-sed -i "s#\/tmp\/\.drupal\.sqlite#\/data\/drupal\.sqlite#g" /opt/drupal/web/sites/default/settings.php
+if [ ! -f /data/drupal.sqlite ] then
+  mv /tmp/.drupal.sqlite /data/drupal.sqlite
+  sed -i "s#\/tmp\/\.drupal\.sqlite#\/data\/drupal\.sqlite#g" /opt/drupal/web/sites/default/settings.php
+fi
+
 drush -r /opt/drupal/ cr
 chmod -R 777 /data
 
