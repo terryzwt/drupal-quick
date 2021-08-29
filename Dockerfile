@@ -21,15 +21,16 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     mv drupal.phar /usr/local/bin/drupal && \
     chmod +x /usr/local/bin/drupal && \
     composer require drupal/console drush/drush && \
+    composer update && \
     #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
     # drupal init && \
     ## ensure the durpal console can run as www-data
-    chown www-data:www-data /var/www && \
+    chown www-data:www-data /opt/drupal && \
     ## install drupal module
     composer require drupal/admin_toolbar
 USER www-data
 #VOLUME /data
-RUN drush site-install -y --account-pass=admin --db-url=sqlite:///data/.drupal.sqlite && \
+RUN drush site-install -y --account-pass=admin --db-url=sqlite:///tmp/.drupal.sqlite && \
     drush cr && \
     drush pm:enable -y admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER root

@@ -1,7 +1,9 @@
 version: "3"
 services:
   drupal-quick:
-    image: zterry95/drupal-quick 
+    #image: d9
+    build:
+      context: ./
     container_name: drupal-quick
     volumes:
       - ./data:/data
