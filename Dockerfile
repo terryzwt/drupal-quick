@@ -2,7 +2,7 @@ FROM drupal:9-apache
 ENV DRUSH_LAUCHER 0.9.0
 ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush8
 ENV COMPOSER_MEMORY_LIMIT -1
-RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git default-mysql-client && \
+RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git default-mysql-client iputils-ping && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
     mkdir /data && \
