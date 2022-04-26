@@ -17,9 +17,6 @@ jobs:
     strategy:
       matrix:
        include:
-         - tag: D8
-           Dockerfile: "Dockerfile-8"
-           image: "zterry95/drupal-quick:8"
          - tag: D9
            Dockerfile: "Dockerfile"
            image: "zterry95/drupal-quick:latest"
