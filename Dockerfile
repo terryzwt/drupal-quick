@@ -20,6 +20,10 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     curl https://drupalconsole.com/installer -L -o drupal.phar && \
     mv drupal.phar /usr/local/bin/drupal && \
     chmod +x /usr/local/bin/drupal && \
+    composer config --no-plugins allow-plugins.drupal/core-composer-scaffold true && \
+    composer config --no-plugins allow-plugins.composer/installers true && \
+    composer config --no-plugins allow-plugins.drupal/core-project-message true && \
+    composer config --no-plugins allow-plugins.drupal/console-extend-plugin true && \
     composer require drupal/console drush/drush && \
     composer update && \
     #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
