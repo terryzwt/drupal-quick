@@ -1,37 +1,17 @@
-FROM drupal:9-apache
-ENV DRUSH_LAUCHER 0.10.1
-ENV DRUSH_LAUNCHER_FALLBACK /usr/local/bin/drush
-ENV COMPOSER_MEMORY_LIMIT -1
+ARG DRUPAL_VERSION
+FROM drupal:${DRUPAL_VERSION}-apache
+ENV COMPOSER_MEMORY_LIMIT=-1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git default-mysql-client iputils-ping && \
     cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
     sed -i "s/memory_limit = 128M/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
-    mkdir /data && \
-    chown -R www-data:www-data /data && \
-    #chsh -s /usr/bin/fish && \
-    php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php && \
-    php composer-setup.php && \
-    php -r "unlink('composer-setup.php');" && \
-    mv composer.phar /usr/local/bin/composer && \
-    ###### install drush laucher ######
-    wget -O drush.phar https://github.com/drush-ops/drush-launcher/releases/download/$DRUSH_LAUCHER/drush.phar && \
-    chmod +x drush.phar && \
-    mv drush.phar /usr/local/bin/drush && \
-    # Install console.
-    curl https://drupalconsole.com/installer -L -o drupal.phar && \
-    mv drupal.phar /usr/local/bin/drupal && \
-    chmod +x /usr/local/bin/drupal && \
-    composer config --no-plugins allow-plugins.drupal/core-composer-scaffold true && \
-    composer config --no-plugins allow-plugins.composer/installers true && \
-    composer config --no-plugins allow-plugins.drupal/core-project-message true && \
-    composer config --no-plugins allow-plugins.drupal/console-extend-plugin true && \
-    composer require drupal/console drush/drush && \
-    composer update && \
+    cd /opt/drupal && \
+    rm -rf vendor && rm composer.lock && \
+    composer install && \
     #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
-    # drupal init && \
-    ## ensure the durpal console can run as www-data
     chown www-data:www-data /opt/drupal && \
     ## install drupal module
-    composer require drupal/admin_toolbar
+    composer require drush/drush drupal/admin_toolbar drupal/devel
 USER www-data
 #VOLUME /data
 RUN drush site-install -y --account-pass=admin --db-url=sqlite:///tmp/.drupal.sqlite && \

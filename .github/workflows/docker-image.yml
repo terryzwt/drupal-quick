@@ -17,9 +17,8 @@ jobs:
     strategy:
       matrix:
        include:
-         - tag: D9
-           Dockerfile: "Dockerfile"
-           image: "zterry95/drupal-quick:latest"
+         - drupal_version: 9
+         - drupal_version: 10
 
     steps:
     - uses: actions/checkout@v2
@@ -42,5 +41,6 @@ jobs:
       with:
         push: true
         context: .
-        file: ${{ matrix.Dockerfile }}
-        tags: ${{ matrix.image }}
+        file: Dockerfile
+        tags: zterry95/drupal-quick:${{ matrix.drupal_version }}
+        build-args: DRUPAL_VERSION=${{ matrix.drupal_version }}
