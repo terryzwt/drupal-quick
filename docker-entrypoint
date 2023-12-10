@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 # copy file so volumn can share existint database;
+mkdir -p /data
 chmod -R 777 /data
 if [ ! -f /data/drupal.sqlite ]; then
   mv /tmp/.drupal.sqlite /data/drupal.sqlite
