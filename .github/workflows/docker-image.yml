@@ -41,6 +41,7 @@ jobs:
       with:
         push: true
         context: .
+        platforms: linux/amd64,linux/arm64
         file: Dockerfile
         tags: zterry95/drupal-quick:${{ matrix.drupal_version }}
         build-args: DRUPAL_VERSION=${{ matrix.drupal_version }}
