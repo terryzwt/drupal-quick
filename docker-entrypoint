@@ -3,10 +3,6 @@ set -e
 # copy file so volumn can share existint database;
 mkdir -p /data
 chmod -R 777 /data
-if [ ! -f /data/drupal.sqlite ]; then
-  mv /tmp/.drupal.sqlite /data/drupal.sqlite
-fi
-sed -i "s#\/tmp\/\.drupal\.sqlite#\/data\/drupal\.sqlite#g" /opt/drupal/web/sites/default/settings.php
 drush -r /opt/drupal/ cr
 
 if [ "${1#-}" != "$1" ]; then
