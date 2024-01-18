@@ -14,6 +14,8 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     sed -i 's/"minimum-stability": "stable"/"minimum-stability": "dev"/g' composer.json && \
     composer require drush/drush drupal/admin_toolbar drupal/devel davyin/drupal_settings && \
     cp vendor/davyin/drupal_settings/assets/* web/sites/default/ && \
+    cp web/sites/default/default.settings.php web/sites/default/settings.php && \
+    chmod 777 web/sites/default/settings.php && \
     composer drupal:scaffold -q
 USER www-data
 #VOLUME /data
