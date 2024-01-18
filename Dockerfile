@@ -11,7 +11,10 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     #mkdir -p ~/.config/fish/completions/ && ln -s ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish && \
     chown www-data:www-data /opt/drupal && \
     ## install drupal module
-    composer require drush/drush drupal/admin_toolbar drupal/devel
+    sed -i 's/"minimum-stability": "stable"/"minimum-stability": "dev"/g' composer.json && \
+    composer require drush/drush drupal/admin_toolbar drupal/devel davyin/drupal_settings && \
+    cp vendor/davyin/drupal_settings/assets/* web/sites/default/ && \
+    composer drupal:scaffold -q
 USER www-data
 #VOLUME /data
 RUN drush site-install -y --account-pass=admin --db-url=sqlite:///tmp/.drupal.sqlite && \
