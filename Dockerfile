@@ -17,9 +17,6 @@ RUN apt-get update -y && apt-get install -y vim fish sqlite3 zip unzip wget git 
     composer drupal:scaffold -q
 USER www-data
 #VOLUME /data
-RUN drush site-install -y --account-pass=admin --db-url=sqlite:///tmp/.drupal.sqlite && \
-    drush cr && \
-    drush pm:enable -y admin_toolbar_tools admin_toolbar_search admin_toolbar_links_access_filter
 USER root
 
 ENTRYPOINT ["docker-entrypoint"]
