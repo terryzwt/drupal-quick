@@ -3,7 +3,6 @@ set -e
 # copy file so volumn can share existint database;
 mkdir -p /data
 chmod -R 777 /data
-drush -r /opt/drupal/ cr
 
 if [ "${1#-}" != "$1" ]; then
     set -- apache2-foreground "$@"
