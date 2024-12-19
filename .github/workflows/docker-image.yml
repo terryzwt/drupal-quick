@@ -19,6 +19,7 @@ jobs:
        include:
          - drupal_version: 9
          - drupal_version: 10
+         - drupal_version: 11.1.0-rc1
 
     steps:
     - uses: actions/checkout@v2
